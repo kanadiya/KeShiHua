@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>观星测历</title>
+		<style>
+			/* 原有全局样式 */
+			* {
+				margin: 0;
+				padding: 0;
+			}
+
+			@font-face {
+				font-family: 'foxi';
+				src: url(./src/font/Slidefu-Regular.ttf) format('truetype');
+			}
+
+			body {
+				background-color: #000;
+			}
+
+			.body_box {
+				background: url('./src/image/背景.png');
+				background-size: cover;
+				background-repeat: no-repeat;
+				position: relative;
+				background-color: #fff;
+				width: 100%;
+				height: 75rem;
+				max-width: 125rem;
+				margin: 0 auto;
+				transform-origin: top left;
+			}
+
+			#cover-title-img {
+				position: absolute;
+				top: 400px;
+				left: 300px;
+				width: 30%;
+				z-index: 2;
+			}
+
+			#cover-subtitle-div {
+				font-size: 40px;
+				color: white;
+				position: absolute;
+				left: 300px;
+				top: 500px;
+				z-index: 2;
+				font-weight: 100;
+				font-family: "foxi", serif;
+			}
+
+			/* 新增：环形文字容器 */
+			.text-ring {
+				position: absolute;
+				left: 600px;
+				top: 750px;
+				width: 400px;
+				height: 400px;
+				margin-left: -200px;
+				margin-top: -200px;
+				pointer-events: none;
+				z-index: 1;
+			}
+
+			/* 定义闪烁动画效果，时长变慢，颜色改为 #66ccff */
+			@keyframes lighting {
+
+				0%,
+				85% {
+					color: #4b4b4b;
+					text-shadow: none;
+				}
+
+				100% {
+					color: #66ccff;
+					text-shadow: 0 0 5px #66ccff, 0 0 3px #66ccff;
+				}
+			}
+
+			/* 黄道符号排列（放大版），添加闪烁动画，时长 2000ms */
+			.zodiac-ring span {
+				position: absolute;
+				left: 50%;
+				transform:
+					translateX(-50%) rotate(calc(30deg * var(--i))) translateY(-380px) rotate(calc(-30deg * var(--i)));
+				font-size: 20px;
+				animation: lighting 2000ms alternate infinite ease;
+			}
+
+			/* 为每个黄道符号设置延迟 */
+			.zodiac-ring span:nth-child(1) {
+				animation-delay: 150ms;
+			}
+
+			.zodiac-ring span:nth-child(2) {
+				animation-delay: 300ms;
+			}
+
+			.zodiac-ring span:nth-child(3) {
+				animation-delay: 450ms;
+			}
+
+			.zodiac-ring span:nth-child(4) {
+				animation-delay: 600ms;
+			}
+
+			.zodiac-ring span:nth-child(5) {
+				animation-delay: 750ms;
+			}
+
+			.zodiac-ring span:nth-child(6) {
+				animation-delay: 900ms;
+			}
+
+			.zodiac-ring span:nth-child(7) {
+				animation-delay: 1050ms;
+			}
+
+			.zodiac-ring span:nth-child(8) {
+				animation-delay: 1200ms;
+			}
+
+			.zodiac-ring span:nth-child(9) {
+				animation-delay: 1350ms;
+			}
+
+			.zodiac-ring span:nth-child(10) {
+				animation-delay: 1500ms;
+			}
+
+			.zodiac-ring span:nth-child(11) {
+				animation-delay: 1650ms;
+			}
+
+			.zodiac-ring span:nth-child(12) {
+				animation-delay: 1800ms;
+			}
+
+			/* 节气文字排列（放大版），错开15°，添加闪烁动画，延迟整体增加 500ms */
+			.solar-term-ring span {
+				position: absolute;
+				left: 50%;
+				transform:
+					translateX(-50%) rotate(calc(30deg * var(--j) + 15deg)) translateY(-460px) rotate(calc(-30deg * var(--j) - 15deg));
+				font-size: 20px;
+				font-family: 'ZCOOL XiaoWei', serif;
+				animation: lighting 2000ms alternate infinite ease;
+			}
+
+			/* 为每个节气文字设置延迟（在原有基础上加 500ms） */
+			.solar-term-ring span:nth-child(1) {
+				animation-delay: 650ms;
+			}
+
+			.solar-term-ring span:nth-child(2) {
+				animation-delay: 800ms;
+			}
+
+			.solar-term-ring span:nth-child(3) {
+				animation-delay: 950ms;
+			}
+
+			.solar-term-ring span:nth-child(4) {
+				animation-delay: 1100ms;
+			}
+
+			.solar-term-ring span:nth-child(5) {
+				animation-delay: 1250ms;
+			}
+
+			.solar-term-ring span:nth-child(6) {
+				animation-delay: 1400ms;
+			}
+
+			.solar-term-ring span:nth-child(7) {
+				animation-delay: 1550ms;
+			}
+
+			.solar-term-ring span:nth-child(8) {
+				animation-delay: 1700ms;
+			}
+
+			.solar-term-ring span:nth-child(9) {
+				animation-delay: 1850ms;
+			}
+
+			.solar-term-ring span:nth-child(10) {
+				animation-delay: 2000ms;
+			}
+
+			.solar-term-ring span:nth-child(11) {
+				animation-delay: 2150ms;
+			}
+
+			.solar-term-ring span:nth-child(12) {
+				animation-delay: 2300ms;
+			}
+
+			/* 原有背景图片 */
+			#cover-bg2 {
+				position: absolute;
+				top: -800px;
+				right: -850px;
+				width: 1600px;
+			}
+
+			#cover-bg3 {
+				position: absolute;
+				top: -400px;
+				right: -400px;
+				width: 800px;
+				animation: rotateAnimation 30s linear infinite;
+			}
+
+			#cover-bg4 {
+				position: absolute;
+				top: -450px;
+				right: -450px;
+				width: 1200px;
+				animation: rotateAnimation 30s linear infinite;
+			}
+
+			@keyframes rotateAnimation {
+				from {
+					transform: rotate(0deg);
+				}
+
+				to {
+					transform: rotate(360deg);
+				}
+			}
+
+			/* 向下探索按钮 */
+			#down-wrap {
+				position: absolute;
+				top: 65%;
+				right: 10%;
+				transform: translate(-50%, -50%);
+				z-index: 2;
+				animation: blink 4s infinite;
+			}
+
+			@keyframes blink {
+				0% {
+					opacity: 1;
+				}
+
+				50% {
+					opacity: 0.2;
+				}
+
+				100% {
+					opacity: 1;
+				}
+			}
+
+			#down-text {
+				position: relative;
+				width: 240px;
+				height: 80px;
+			}
+
+			#down-text img {
+				width: 250px;
+				height: 80px;
+				border-radius: 15px;
+			}
+
+			#down-text span {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				font-size: 24px;
+				font-weight: bold;
+				color: white;
+				text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+			}
+		</style>
+	</head>
+	<body>
+		<div class="body_box">
+			<div class="cover">
+				<div>
+					<img id="cover-title-img" src="./src/svg/cover/ZhuTi.png" alt="title" />
+					<div id="cover-subtitle-div">解读星象和历法密码</div>
+					<div class="text-ring">
+						<div class="zodiac-ring">
+							<span style="--i:0;">立春</span>
+							<span style="--i:1;">雨水</span>
+							<span style="--i:2;">惊蛰</span>
+							<span style="--i:3;">春分</span>
+							<span style="--i:4;">清明</span>
+							<span style="--i:5;">谷雨</span>
+							<span style="--i:6;">立夏</span>
+							<span style="--i:7;">小满</span>
+							<span style="--i:8;">芒种</span>
+							<span style="--i:9;">夏至</span>
+							<span style="--i:10;">小暑</span>
+							<span style="--i:11;">大暑</span>
+						</div>
+						<div class="solar-term-ring">
+							<span style="--j:0;">立秋</span>
+							<span style="--j:1;">处暑</span>
+							<span style="--j:2;">白露</span>
+							<span style="--j:3;">秋分</span>
+							<span style="--j:4;">寒露</span>
+							<span style="--j:5;">霜降</span>
+							<span style="--j:6;">立冬</span>
+							<span style="--j:7;">小雪</span>
+							<span style="--j:8;">大雪</span>
+							<span style="--j:9;">冬至</span>
+							<span style="--j:10;">小寒</span>
+							<span style="--j:11;">大寒</span>
+						</div>
+					</div>
+				</div>
+				<img id="cover-bg2" src="./src/svg/cover/ring.svg" alt="background" />
+				<img id="cover-bg3" src="./src/svg/cover/inside-stars.svg" alt="background" />
+				<img id="cover-bg4" src="./src/svg/cover/outside-stars.svg" alt="background" />
+				<a id="down-wrap" href="src/one_RunPath.html" class="page-scroll">
+					<div id="down-text" style="right: -80%;">
+						<img src="./src/image/星空1.png" alt="星空背景">
+						<span>点 击 进 入</span>
+					</div>
+				</a>
+			</div>
+		</div>
+	</body>
+</html>
